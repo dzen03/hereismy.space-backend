@@ -109,7 +109,7 @@ auto main() -> int {
     parse_db(map_category_ids, map_id_photo, map_id_path, categories);
 
     static constexpr int DEFAULT_PORT = 8765;
-    simple_http_server::Server server("127.0.0.1", DEFAULT_PORT);
+    simple_http_server::Server server("0.0.0.0", DEFAULT_PORT);
 
     server.MapDirectory("/photos",
                         simple_http_server::Directory(
