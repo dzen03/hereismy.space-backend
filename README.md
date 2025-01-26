@@ -25,7 +25,6 @@ See [this repo](https://github.com/dzen03/hereismy.space.git)
 
 ## Using (standalone version)
 0. Install [ImageMagick](https://imagemagick.org/script/index.php).
-
 1. Place your photos into `db/photos`,
 metadata into `db/metadata`
 and built site into `staticfiles`.
@@ -34,7 +33,5 @@ Metadata format:
 {tag1}#{tag2}#...#{tagN}
 {description}
 ```
-
 2. Run `make_db.sh` to create database.
-
 3. Run `./build/here_is_my_space`.
