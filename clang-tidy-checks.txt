@@ -11,3 +11,4 @@ readability-*
 
 -cppcoreguidelines-pro-type-reinterpret-cast
 -cppcoreguidelines-avoid-non-const-global-variables
+-bugprone-throwing-static-initialization

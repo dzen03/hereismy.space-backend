@@ -116,7 +116,7 @@ auto main() -> int {
                             photos_path,
                             {{"Access-Control-Allow-Origin", "*"},
                              {"Access-Control-Allow-Headers", "*"}},
-                            simple_http_server::Directory::Directory::WHITELIST,
+                            simple_http_server::Directory::AllowType::WHITELIST,
                             {std::regex("^.*\\.(jpg|webp)$")}));
 
     const std::string front_site = "/site";
@@ -125,7 +125,7 @@ auto main() -> int {
 
     server.MapUrl(
         front_site,
-        [&front_site](const simple_http_server::Request& request) {
+        [&front_site](const simple_http_server::Request& request) -> auto {
           const auto& file = request.GetUrl().substr(front_site.length() + 1,
                                                      std::string::npos);
 
@@ -138,19 +138,21 @@ auto main() -> int {
         },
         true);
 
-    server.MapUrl("/", [&front_site](
-                           const simple_http_server::Request& /*request*/) {
-      static constexpr int MOVED_CODE = 301;
-      return simple_http_server::Response(
-          MOVED_CODE, "Moved Permanently. Redirecting to " + front_site + "/",
-          {{"Content-Type", "text/plain; charset = utf-8"},
-           {"location", front_site + "/"}},
-          "Moved Permanently");
-    });
+    server.MapUrl(
+        "/",
+        [&front_site](const simple_http_server::Request& /*request*/) -> auto {
+          static constexpr int MOVED_CODE = 301;
+          return simple_http_server::Response(
+              MOVED_CODE,
+              "Moved Permanently. Redirecting to " + front_site + "/",
+              {{"Content-Type", "text/plain; charset = utf-8"},
+               {"location", front_site + "/"}},
+              "Moved Permanently");
+        });
 
     server.MapUrl(
         "/api/categories",
-        [&categories](const simple_http_server::Request& /*request*/) {
+        [&categories](const simple_http_server::Request& /*request*/) -> auto {
           std::ostringstream body;
 
           body << "{\"categories\":[";
@@ -177,8 +179,9 @@ auto main() -> int {
         });
 
     server.MapUrl(
-        "/api/photos", [&map_id_photo, &map_category_ids](
-                           const simple_http_server::Request& request) {
+        "/api/photos",
+        [&map_id_photo, &map_category_ids](
+            const simple_http_server::Request& request) -> auto {
           const auto& arguments = request.GetArguments();
 
           std::ostringstream body;
@@ -215,7 +218,7 @@ auto main() -> int {
 
     server.MapUrl(
         "/api/photo",
-        [&map_id_photo](const simple_http_server::Request& request) {
+        [&map_id_photo](const simple_http_server::Request& request) -> auto {
           std::ostringstream body;
 
           const auto& arguments = request.GetArguments();
