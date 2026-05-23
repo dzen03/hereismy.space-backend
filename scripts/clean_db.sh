@@ -1,5 +1,5 @@
 paths=(
-    "./db/365/photos"
+    "./db/challenge/photos"
     "./db/portfolio/photos"
 )
 

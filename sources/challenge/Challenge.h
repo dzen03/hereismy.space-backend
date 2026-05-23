@@ -2,9 +2,10 @@
 #define HERE_IS_MY_SPACE_365_365_H
 
 #include <map>
+#include <mutex>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
-#include <chrono>
 
 #include "common/IDatabase.h"
 
@@ -19,14 +20,21 @@ class Challenge : public IDatabase {
     std::string author;
     std::string description;
     std::string metadata;  // in json format
-    std::chrono::time_point<std::chrono::system_clock> time;
+    // std::chrono::time_point<std::chrono::system_clock> time;
+    std::string unix_time;
   };
 
  private:
   std::map<std::string, std::vector<std::string>> map_author_ids;
-  std::unordered_map<std::string, Photo> map_id_photo;
+  std::unordered_map<std::string, Challenge::Photo> map_id_photo;
   std::unordered_map<std::string, std::filesystem::path> map_id_path;
   std::unordered_set<std::string> authors;
+
+  std::unordered_map<std::string, std::string> map_tgid_name;
+
+  std::mutex update_mutex;
+
+  auto get_author_name(const std::string& author_id) -> std::string;
 };
 
 #endif  // HERE_IS_MY_SPACE_365_365_H

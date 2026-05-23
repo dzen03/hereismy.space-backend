@@ -5,23 +5,20 @@
 #include <vector>
 
 #include "Server.h"
-
+#include "challenge/Challenge.h"
 #include "common/IDatabase.h"
 #include "frontend/Frontend.h"
 #include "portfolio/Portfolio.h"
-
-namespace {
-}
 
 auto main() -> int {
   try {
     // std::string categories_json;
     // TODO(dzen) add caching for requests
 
-
     auto modules = std::vector<std::unique_ptr<IDatabase>>();
     modules.emplace_back(std::make_unique<Frontend>());
     modules.emplace_back(std::make_unique<Portfolio>());
+    modules.emplace_back(std::make_unique<Challenge>());
 
     for (const auto& module : modules) {
       module->parse_db();
