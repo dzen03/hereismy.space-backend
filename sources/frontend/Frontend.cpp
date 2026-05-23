@@ -1,24 +1,12 @@
 #include "Frontend.h"
 
-#include <exception>
 #include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <regex>
-#include <sstream>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
 
 #include "Directory.h"
 #include "Request.h"
 #include "Response.h"
 #include "Server.h"
-
-#include "common/IDatabase.h"
 
 namespace {
 const auto staticfiles_path = std::filesystem::current_path() / "staticfiles";

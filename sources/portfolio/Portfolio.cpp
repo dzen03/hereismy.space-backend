@@ -1,9 +1,7 @@
 #include "Portfolio.h"
 
-#include <exception>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <map>
 #include <regex>
 #include <sstream>
@@ -17,8 +15,6 @@
 #include "Request.h"
 #include "Response.h"
 #include "Server.h"
-
-#include "common/IDatabase.h"
 
 namespace {
 const auto photos_path =
@@ -98,8 +94,6 @@ void Portfolio::map_urls(simple_http_server::Server& server) {
                            {"Access-Control-Allow-Headers", "*"}},
                           simple_http_server::Directory::AllowType::WHITELIST,
                           {std::regex("^.*\\.(jpg|webp)$")}));
-
-  
 
   server.MapUrl("/api/categories",
                 [&](const simple_http_server::Request& /*request*/) -> auto {
