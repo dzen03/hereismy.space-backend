@@ -28,7 +28,7 @@ const auto staticfiles_path = std::filesystem::current_path() / "staticfiles";
 
 void _parse_db(
     std::map<std::string, std::vector<std::string>>& map_category_ids,
-    std::unordered_map<std::string, Photo>& map_id_photo,
+    std::unordered_map<std::string, Portfolio::Photo>& map_id_photo,
     std::unordered_map<std::string, std::filesystem::path>& map_id_path,
     std::unordered_set<std::string>& categories) {
   for (const auto& entry : std::filesystem::directory_iterator(photos_path)) {
@@ -78,7 +78,7 @@ void _parse_db(
   }
 }
 
-void output_photo(const std::string& index, const Photo& photo,
+void output_photo(const std::string& index, const Portfolio::Photo& photo,
                   std::ostringstream& body) {
   body << R"({"id":")" << index << R"(","description":")" << photo.description
        << R"(","categories":[)";
