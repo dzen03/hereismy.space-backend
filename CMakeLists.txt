@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 option(BUILD_TESTING "Enable tests" OFF)
 add_subdirectory(simple-http-server)
+add_subdirectory(sources)
 
 option(USE_CLANG_TIDY "Enable clang tidy" ON)
 set(CLANG_TIDY_NAME "clang-tidy" CACHE STRING "clang-tidy name/verion")
@@ -38,4 +39,4 @@ if(CLANG_TIDY)
 endif()
 
 add_executable(here_is_my_space main.cpp)
-target_link_libraries(here_is_my_space PRIVATE simple-http-server-sources)
+target_link_libraries(here_is_my_space PRIVATE here_is_my_space-sources simple-http-server-sources)

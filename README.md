@@ -33,5 +33,5 @@ Metadata format:
 {tag1}#{tag2}#...#{tagN}
 {description}
 ```
-2. Run `make_db.sh` to create database.
+2. Run `scripts/make_db.sh` to create database.
 3. Run `./build/here_is_my_space`.
