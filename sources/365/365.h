@@ -1,12 +1,14 @@
-#ifndef HERE_IS_MY_SPACE_PORTFOLIO_PORTFOLIO_H
-#define HERE_IS_MY_SPACE_PORTFOLIO_PORTFOLIO_H
+#ifndef HERE_IS_MY_SPACE_365_365_H
+#define HERE_IS_MY_SPACE_365_365_H
 
 #include <map>
+#include <string>
 #include <unordered_set>
+#include <chrono>
 
 #include "common/IDatabase.h"
 
-class Portfolio : public IDatabase {
+class Challenge : public IDatabase {
  public:
   void parse_db() override;
   void map_urls(simple_http_server::Server& server) override;
@@ -14,15 +16,17 @@ class Portfolio : public IDatabase {
   struct Photo {
     std::string extension;  // path = id + extension or id + '.XX' + extension,
                             // where XX in ['sm', 'md']
-    std::vector<std::string> categories;
+    std::string author;
     std::string description;
+    std::string metadata;  // in json format
+    std::chrono::time_point<std::chrono::system_clock> time;
   };
 
  private:
-  std::map<std::string, std::vector<std::string>> map_category_ids;
+  std::map<std::string, std::vector<std::string>> map_author_ids;
   std::unordered_map<std::string, Photo> map_id_photo;
   std::unordered_map<std::string, std::filesystem::path> map_id_path;
-  std::unordered_set<std::string> categories;
+  std::unordered_set<std::string> authors;
 };
 
-#endif  // HERE_IS_MY_SPACE_PORTFOLIO_PORTFOLIO_H
+#endif  // HERE_IS_MY_SPACE_365_365_H

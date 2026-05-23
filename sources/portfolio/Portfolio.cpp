@@ -14,23 +14,36 @@
 #include <vector>
 
 #include "Directory.h"
-#include "IDatabase.h"
 #include "Request.h"
 #include "Response.h"
 #include "Server.h"
+
+#include "common/IDatabase.h"
 
 namespace {
 const auto photos_path =
     std::filesystem::current_path() / "db" / "portfolio" / "photos";
 const auto metadata_path =
     std::filesystem::current_path() / "db" / "portfolio" / "metadata";
-const auto staticfiles_path = std::filesystem::current_path() / "staticfiles";
 
-void _parse_db(
-    std::map<std::string, std::vector<std::string>>& map_category_ids,
-    std::unordered_map<std::string, Portfolio::Photo>& map_id_photo,
-    std::unordered_map<std::string, std::filesystem::path>& map_id_path,
-    std::unordered_set<std::string>& categories) {
+void output_photo(const std::string& index, const Portfolio::Photo& photo,
+                  std::ostringstream& body) {
+  body << R"({"id":")" << index << R"(","description":")" << photo.description
+       << R"(","categories":[)";
+  if (!photo.categories.empty()) {
+    auto category_it = photo.categories.begin();
+
+    body << '"' << *category_it << '"';
+
+    for (++category_it; category_it != photo.categories.end(); ++category_it) {
+      body << ",\"" << *category_it << '\"';
+    }
+  }
+  body << "]}";
+}
+}  // namespace
+
+void Portfolio::parse_db() {
   for (const auto& entry : std::filesystem::directory_iterator(photos_path)) {
     if (entry.path().stem().string().starts_with(".")) {
       continue;
@@ -77,27 +90,6 @@ void _parse_db(
     map_category_ids[""].emplace_back(index);
   }
 }
-
-void output_photo(const std::string& index, const Portfolio::Photo& photo,
-                  std::ostringstream& body) {
-  body << R"({"id":")" << index << R"(","description":")" << photo.description
-       << R"(","categories":[)";
-  if (!photo.categories.empty()) {
-    auto category_it = photo.categories.begin();
-
-    body << '"' << *category_it << '"';
-
-    for (++category_it; category_it != photo.categories.end(); ++category_it) {
-      body << ",\"" << *category_it << '\"';
-    }
-  }
-  body << "]}";
-}
-}  // namespace
-
-void Portfolio::parse_db() {
-  _parse_db(map_category_ids, map_id_photo, map_id_path, categories);
-}
 void Portfolio::map_urls(simple_http_server::Server& server) {
   server.MapDirectory("/photos",
                       simple_http_server::Directory(
@@ -107,34 +99,7 @@ void Portfolio::map_urls(simple_http_server::Server& server) {
                           simple_http_server::Directory::AllowType::WHITELIST,
                           {std::regex("^.*\\.(jpg|webp)$")}));
 
-  const std::string front_site = "/site";
-  server.MapDirectory(front_site,
-                      simple_http_server::Directory(staticfiles_path));
-
-  server.MapUrl(
-      front_site,
-      [&front_site](const simple_http_server::Request& request) -> auto {
-        const auto& file =
-            request.GetUrl().substr(front_site.length() + 1, std::string::npos);
-
-        if (!file.empty() && std::filesystem::exists(staticfiles_path / file)) {
-          return simple_http_server::Response();
-        }
-        return simple_http_server::Server::Render(staticfiles_path /
-                                                  "index.html");
-      },
-      true);
-
-  server.MapUrl(
-      "/",
-      [&front_site](const simple_http_server::Request& /*request*/) -> auto {
-        static constexpr int MOVED_CODE = 301;
-        return simple_http_server::Response(
-            MOVED_CODE, "Moved Permanently. Redirecting to " + front_site + "/",
-            {{"Content-Type", "text/plain; charset = utf-8"},
-             {"location", front_site + "/"}},
-            "Moved Permanently");
-      });
+  
 
   server.MapUrl("/api/categories",
                 [&](const simple_http_server::Request& /*request*/) -> auto {

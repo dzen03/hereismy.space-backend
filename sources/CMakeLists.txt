@@ -1,9 +1,6 @@
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS
-        365/*.cpp
-        portfolio/*.cpp
-        365/*.h
-        portfolio/*.h
-        common/*.h
+        */*.cpp
+        */*.h
 )
 
 if (WIN32)
@@ -14,4 +11,4 @@ else ()
 endif ()
 
 target_link_libraries(here_is_my_space-sources PRIVATE simple-http-server-sources)
-target_include_directories(here_is_my_space-sources PUBLIC sources common portfolio 365)
+target_include_directories(here_is_my_space-sources PUBLIC sources ${CMAKE_CURRENT_SOURCE_DIR})

@@ -1,5 +1,5 @@
-#ifndef HERE_IS_MY_SPACE_INCLUDES_IDATABASE_H
-#define HERE_IS_MY_SPACE_INCLUDES_IDATABASE_H
+#ifndef HERE_IS_MY_SPACE_COMMON_IDATABASE_H
+#define HERE_IS_MY_SPACE_COMMON_IDATABASE_H
 
 #include "Server.h"
 
@@ -17,4 +17,4 @@ class IDatabase {
   auto operator=(IDatabase&& source) -> IDatabase& = default;
 };
 
-#endif  // HERE_IS_MY_SPACE_INCLUDES_IDATABASE_H
+#endif  // HERE_IS_MY_SPACE_COMMON_IDATABASE_H
