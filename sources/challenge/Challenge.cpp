@@ -96,7 +96,7 @@ void Challenge::parse_db() {
     map_author_ids_local[""].emplace_back(index);
   }
 
-  std::scoped_lock(update_mutex);
+  std::scoped_lock lock(update_mutex);
   std::swap(this->authors, authors_local);
   std::swap(this->map_author_ids, map_author_ids_local);
   std::swap(this->map_id_photo, map_id_photo_local);
@@ -104,15 +104,15 @@ void Challenge::parse_db() {
   std::swap(this->map_tgid_name, map_tgid_name_local);
 }
 
-void Challenge::map_urls(simple_http_server::Server& server) {
-  auto output_photo = [this](const std::string& index,
+void Challenge::output_photo(const std::string& index,
                              const Challenge::Photo& photo,
                              std::ostringstream& body) {
-    body << R"({"id":")" << index << R"(","author":")"
-         << get_author_name(photo.author) << R"(","description":")"
-         << photo.description << R"(","metadata":)" << photo.metadata << "}";
-  };
+  body << R"({"id":")" << index << R"(","author":")"
+       << get_author_name(photo.author) << R"(","description":")"
+       << photo.description << R"(","metadata":)" << photo.metadata << "}";
+};
 
+void Challenge::map_urls(simple_http_server::Server& server) {
   server.MapDirectory("/365photos",
                       simple_http_server::Directory(
                           photos_path,
@@ -122,7 +122,7 @@ void Challenge::map_urls(simple_http_server::Server& server) {
                           {std::regex("^.*\\.(jpg|webp)$")}));
 
   server.MapUrl("/api/365/authors",
-                [&](const simple_http_server::Request& request) -> auto {
+                [this](const simple_http_server::Request& request) -> auto {
                   std::ostringstream body;
 
                   body << "{\"authors\":[";
@@ -149,7 +149,7 @@ void Challenge::map_urls(simple_http_server::Server& server) {
 
   server.MapUrl(
       "/api/365/photos",
-      [&](const simple_http_server::Request& request) -> auto {
+      [this](const simple_http_server::Request& request) -> auto {
         const auto& arguments = request.GetArguments();
 
         std::ostringstream body;
@@ -185,7 +185,7 @@ void Challenge::map_urls(simple_http_server::Server& server) {
 
   server.MapUrl(
       "/api/365/photo",
-      [&](const simple_http_server::Request& request) -> auto {
+      [this](const simple_http_server::Request& request) -> auto {
         std::ostringstream body;
 
         const auto& arguments = request.GetArguments();
@@ -227,7 +227,7 @@ void Challenge::map_urls(simple_http_server::Server& server) {
       });
 
   server.MapUrl("/api/365/reload",
-                [&](const simple_http_server::Request& request) -> auto {
+                [this](const simple_http_server::Request& request) -> auto {
                   parse_db();
 
                   static constexpr int OK_CODE = 200;

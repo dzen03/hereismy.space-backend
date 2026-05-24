@@ -35,6 +35,8 @@ class Challenge : public IDatabase {
   std::mutex update_mutex;
 
   auto get_author_name(const std::string& author_id) -> std::string;
+  void output_photo(const std::string& index, const Challenge::Photo& photo,
+                    std::ostringstream& body);
 };
 
 #endif  // HERE_IS_MY_SPACE_365_365_H
