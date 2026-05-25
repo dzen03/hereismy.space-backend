@@ -36,7 +36,7 @@ class Challenge : public IDatabase {
   std::mutex update_mutex;
 
   auto get_author_name(const std::string& author_id) -> std::string;
-  auto get_author_id(const std::string& author_id) -> std::string;
+  auto get_author_id(const std::string& author_name) -> std::string;
   void output_photo(const std::string& index, const Challenge::Photo& photo,
                     std::ostringstream& body);
 };

@@ -28,8 +28,8 @@ auto Challenge::get_author_name(const std::string& author_id) -> std::string {
 
   return (it != map_tgid_name.end()) ? it->second : "Unknown Author";
 }
-auto Challenge::get_author_id(const std::string& author_id) -> std::string {
-  auto it = map_name_tgid.find(author_id);
+auto Challenge::get_author_id(const std::string& author_name) -> std::string {
+  auto it = map_name_tgid.find(author_name);
 
   return (it != map_name_tgid.end()) ? it->second : "";
 }
@@ -170,7 +170,7 @@ void Challenge::map_urls(simple_http_server::Server& server) {
         }
 
         if (map_author_ids.contains(get_author_id(name))) {
-          const auto& photos = map_author_ids.at(name);
+          const auto& photos = map_author_ids.at(get_author_id(name));
           auto category_it = photos.begin();
 
           output_photo(*category_it, map_id_photo.at(*category_it), body);
