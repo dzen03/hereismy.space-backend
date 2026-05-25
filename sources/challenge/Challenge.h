@@ -31,10 +31,12 @@ class Challenge : public IDatabase {
   std::unordered_set<std::string> authors;
 
   std::unordered_map<std::string, std::string> map_tgid_name;
+  std::unordered_map<std::string, std::string> map_name_tgid;
 
   std::mutex update_mutex;
 
   auto get_author_name(const std::string& author_id) -> std::string;
+  auto get_author_id(const std::string& author_id) -> std::string;
   void output_photo(const std::string& index, const Challenge::Photo& photo,
                     std::ostringstream& body);
 };

@@ -28,6 +28,11 @@ auto Challenge::get_author_name(const std::string& author_id) -> std::string {
 
   return (it != map_tgid_name.end()) ? it->second : "Unknown Author";
 }
+auto Challenge::get_author_id(const std::string& author_id) -> std::string {
+  auto it = map_name_tgid.find(author_id);
+
+  return (it != map_name_tgid.end()) ? it->second : "";
+}
 
 void Challenge::parse_db() {
   std::map<std::string, std::vector<std::string>> map_author_ids_local;
@@ -36,6 +41,7 @@ void Challenge::parse_db() {
   std::unordered_set<std::string> authors_local;
 
   std::unordered_map<std::string, std::string> map_tgid_name_local;
+  std::unordered_map<std::string, std::string> map_name_tgid_local;
 
   const auto tgid_map_path = metadata_path / ".tg_id.map";
   std::ifstream tgid_map_file(tgid_map_path);
@@ -51,6 +57,7 @@ void Challenge::parse_db() {
       std::string key = line.substr(0, delim_pos);
       std::string val = line.substr(delim_pos + 1);
 
+      map_name_tgid_local[val] = key;
       map_tgid_name_local[std::move(key)] = std::move(val);
     }
   }
@@ -102,6 +109,7 @@ void Challenge::parse_db() {
   std::swap(this->map_id_photo, map_id_photo_local);
   std::swap(this->map_id_path, map_id_path_local);
   std::swap(this->map_tgid_name, map_tgid_name_local);
+  std::swap(this->map_name_tgid, map_name_tgid_local);
 }
 
 void Challenge::output_photo(const std::string& index,
