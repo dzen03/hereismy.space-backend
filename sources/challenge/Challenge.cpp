@@ -169,7 +169,7 @@ void Challenge::map_urls(simple_http_server::Server& server) {
           name = arguments.at("category");
         }
 
-        if (map_author_ids.contains(name)) {
+        if (map_author_ids.contains(get_author_id(name))) {
           const auto& photos = map_author_ids.at(name);
           auto category_it = photos.begin();
 
